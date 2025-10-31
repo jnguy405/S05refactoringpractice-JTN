@@ -1,40 +1,25 @@
-# Section 5 – Refactoring Code Smells in Practice
+# Section 5 - Identifying code smells practice - Jenalee Nguyen
 
-This activity is designed to help you practice identifying code smells and applying refactoring patterns to a real codebase in CMPM 121, Game Development Patterns.
+# List of code smells and corresponding refactoring pattern
 
-## Assignment Instructions
+1. **Mystery Names**: variable names `c` for counter, `a`, `b`, and `h` for the constants, function `setup()` does not give insight to the contents of the block of code, `bI`, `bD`, `bR`, and `ctr` are too short (even with comments describing the const above).
 
-For this assignment, your task is to **analyze and improve the code in `src/main.ts`**:
+- **Changes -> Rename Variable (137)**:
+  1. `c` -> `counter` to keep track of the counter
+  2. REMOVE `a`, `b`, and `h` and just fill in the values in `document.body.innerHTML`. Constants for reference IDs can be made later if it is reoccuringly used.
+  3. `setup()` will be removed (It is also currently an unnecessary **Middle Man** found in function `start()`)
+  4. `bI` -> `incBtn`, `bD` -> `decBtn`, `bR` -> `resetBtn`, and `ctr` -> `counterEl`.
 
-1. **Identify code smells**: Review the code and look for patterns that may cause maintenance issues, reduce readability, or introduce potential bugs.
-2. **Refactor**: Apply **refactoring patterns** as described in Fowler’s _Refactoring_ book to improve the code.
-3. **Document your work**: Once you have completed your refactoring:
-   - Rewrite this README.md
-   - List the **code smells** you identified
-   - Describe the **refactoring patterns** you applied and how they improved the code
+2. **Long Function, Middle Man, and Duplicate Code**: The entirety of the logic is wrapped in `setup()` and then called as a _Middle Man_ later in function `start()`.
 
-## Getting Started
+- **Changes**:
+  1. REMOVE `setup()` wrapper and calls from the face of the Earth.
+  2. Wrap the HTML setup in `createUI()` so it is easy to locate in `start()`
+  3. Wrap `ids` and `Event Listeners` in `setupCounter()`
+  4. Extract the duplicate code found in the `incBtn`, `decBtn`, and `resetBtn` event listeners into a helper function and call that in each event with corresponding parameters for matching event behavior.
 
-With Codespaces (or another environment supporting devcontainers):
+3. **Data Type Declaration**:
 
-1. Run `deno task dev` to start the development server
-
-Without Codespaces (local VS Code):
-
-1. Install the [Deno](https://docs.deno.com/runtime/getting_started/installation/) runtime.
-2. Install the Deno VS Code extension (must be done only after installing Deno runtime).
-3. Run `./setup-hooks.sh` to enable pre-commit quality checks
-4. Run `deno task dev` to start the development server
-
-The setup script configures Git hooks to automatically run formatting, linting, and type checking before commits.
-
-## Deployment
-
-This project is configured for automatic deployment to GitHub Pages using GitHub Actions.
-
-### Setup GitHub Pages Deployment
-
-1. Go to your repository's Settings → Pages
-2. Under "Source", select "GitHub Actions"
-3. The workflow will automatically deploy on pushes to the `main` branch
-4. Your site will be published at `https://<your-github-username>.github.io/<repository-name>/`
+- TypeScript does not like when types are not defined (funny!)
+  1. Change example: `change: number` and `counterEl: HTMLElement`.
+  2. Or all the voids!
